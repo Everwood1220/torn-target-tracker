@@ -1,50 +1,21 @@
 TORN TARGET TRACKER - RELEASE NOTES
 ===================================
-Newest version is at the top. Open torn-targets.html in Chrome on your
-computer (download it first; a Google Drive preview won't run it).
-Your API key, list, notes and settings are kept in your own browser, never
-in the file, so every copy starts clean.
+Newest version is at the top.
+Open it at: https://everwood1220.github.io/torn-target-tracker/
+Your API key, list, notes and settings are kept in your own browser only.
 
 
 -------------------------------------------------------------------
-v1.2  -  NOT RELEASED YET (in progress)
--------------------------------------------------------------------
-- New: "Saved list" option on the Add your targets page. Open any list
-  kept in this browser in one click, including the copy saved
-  automatically when you reset.
-- New: The upload option is now "JSON / CSV file" and also takes .csv
-  files: a CSV downloaded from this page, or any spreadsheet saved as CSV
-  with an ID or profile link column.
-- New: Saved list names can be renamed by clicking the name, in Settings
-  and on the Add your targets page.
-
-
--------------------------------------------------------------------
-v1.1  -  October 11, 2026
--------------------------------------------------------------------
-- New: About section at the bottom of Settings crediting Everwood [62912],
-  with a link to send Everwood a Torn message about problems or ideas.
-- New: "Erase everything from this browser" button in Settings (under
-  New sheet / Reset list). After two confirmations it deletes your API
-  key, lists, saved lists, notes, battle history and settings, then
-  reloads the page as if opened for the first time.
-- Changed: The API key prompt now lists everything a Limited Access key
-  lets the page do (targets, your bars and cooldowns, chain and war,
-  battle history, Push / STAY IN HOSP from message subjects), explains
-  that a Public key isn't enough, and that Torn keys are read-only.
-- Changed: The key box in the Settings drawer has a short version of
-  the same note.
-
-
--------------------------------------------------------------------
-v1.0  -  October 10, 2026  -  First release
+v1.0  -  October 11, 2026  -  First release
 -------------------------------------------------------------------
 
 GETTING STARTED
 - Paste a Torn "Limited Access" API key (Torn > Settings > API Keys).
-- Start a list four ways: the Matchup Sheet (Google Sheet link) from Aqua
-  leadership, a faction page link, player IDs separated by commas, or a
-  JSON backup file.
+  The page explains everything the key is used for. Torn keys are
+  read-only, so the page can't attack, spend, trade or send anything.
+- Start a list five ways: the Matchup Sheet (Google Sheet link) from Aqua
+  leadership, a faction page link, player IDs separated by commas, a
+  JSON or CSV file, or one of your saved lists.
 - "+ Add targets" adds players without clearing your current list.
 
 TARGET LIST
@@ -97,4 +68,7 @@ SETTINGS (slide-in drawer on the right)
 - Backup or Restore lists: download JSON or CSV, save this list, saved
   lists (restore, rename, download, delete), copy player IDs.
 - New sheet / Reset list (your current list is saved first).
+- Erase everything from this browser: deletes your key, lists, notes,
+  history and settings so the page starts like new.
 - Dark / light mode.
+- About: made by Everwood [62912], with a link to send feedback.
