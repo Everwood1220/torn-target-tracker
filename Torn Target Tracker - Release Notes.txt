@@ -1,0 +1,100 @@
+TORN TARGET TRACKER - RELEASE NOTES
+===================================
+Newest version is at the top. Open torn-targets.html in Chrome on your
+computer (download it first; a Google Drive preview won't run it).
+Your API key, list, notes and settings are kept in your own browser, never
+in the file, so every copy starts clean.
+
+
+-------------------------------------------------------------------
+v1.2  -  NOT RELEASED YET (in progress)
+-------------------------------------------------------------------
+- New: "Saved list" option on the Add your targets page. Open any list
+  kept in this browser in one click, including the copy saved
+  automatically when you reset.
+- New: The upload option is now "JSON / CSV file" and also takes .csv
+  files: a CSV downloaded from this page, or any spreadsheet saved as CSV
+  with an ID or profile link column.
+- New: Saved list names can be renamed by clicking the name, in Settings
+  and on the Add your targets page.
+
+
+-------------------------------------------------------------------
+v1.1  -  October 11, 2026
+-------------------------------------------------------------------
+- New: About section at the bottom of Settings crediting Everwood [62912],
+  with a link to send Everwood a Torn message about problems or ideas.
+- New: "Erase everything from this browser" button in Settings (under
+  New sheet / Reset list). After two confirmations it deletes your API
+  key, lists, saved lists, notes, battle history and settings, then
+  reloads the page as if opened for the first time.
+- Changed: The API key prompt now lists everything a Limited Access key
+  lets the page do (targets, your bars and cooldowns, chain and war,
+  battle history, Push / STAY IN HOSP from message subjects), explains
+  that a Public key isn't enough, and that Torn keys are read-only.
+- Changed: The key box in the Settings drawer has a short version of
+  the same note.
+
+
+-------------------------------------------------------------------
+v1.0  -  October 10, 2026  -  First release
+-------------------------------------------------------------------
+
+GETTING STARTED
+- Paste a Torn "Limited Access" API key (Torn > Settings > API Keys).
+- Start a list four ways: the Matchup Sheet (Google Sheet link) from Aqua
+  leadership, a faction page link, player IDs separated by commas, or a
+  JSON backup file.
+- "+ Add targets" adds players without clearing your current list.
+
+TARGET LIST
+- Spreadsheet-style grid that fits on one screen without side scrolling.
+- Columns: Name [ID] (links to profile), Level, Life bar (hover for
+  numbers), Status, Time, Reason, History (wins/losses vs. each player),
+  Active, Group, Priority star (bolds the name), Stats, Attack button,
+  editable Notes, and a trash can to remove a player.
+- Hospital/jail/travel countdowns synced with Torn's clock. At 0 the timer
+  turns green and counts up "Out for ..." until the player is re-checked.
+- Click any column header to sort; click again to reverse. Status sorts
+  Hospital (soonest out first), then OK, then everyone else.
+- Rows stay in place while the list updates; new players go to the bottom.
+- Click a player's row to refresh just that player.
+- "Aqua vs <faction>" heading for lists made from a sheet or faction page,
+  with links to the target sheet and your faction page.
+- The page scrolls until the column headers reach the top, then the list
+  scrolls on its own.
+
+TOP BAR (always visible at the top)
+- Your energy (E), nerve (N), life, status, and drug, booster and medical
+  cooldowns with their max (adjustable in Settings).
+- Ranked war score with a link to the war page, or "No ranked war".
+- Chain count with the next bonus (e.g. 4/10) and chain timeout.
+- STAY IN HOSP alert from messages saying "Turtle", "Stay in Hosp" or
+  "Stay in Hospital". It turns into a green PUSH when the push time hits.
+- Push countdown read from message subjects with "push" and a TC time
+  (e.g. "Push @ 18:30", "17:40 Push"), shown as "Push @ 18:30 in 1h 12m".
+- Torn City Time (TCT) clock.
+- Shrinks itself to stay on one line on smaller screens.
+
+UPDATES AND API USE
+- Refresh All checks every player (about 650 ms apart, ~92 calls a
+  minute, under Torn's 100-a-minute limit). Other lookups pause until
+  it's done.
+- Optional automatic updates; the top bar keeps updating during them.
+- Messages checked every 5 seconds, your status every 5 seconds, war
+  score once a minute, battle history every 5 minutes.
+- Reloading the page (F5) does not re-check the whole list.
+- After 15 minutes with no mouse, keyboard or scroll activity, all Torn
+  calls stop until you're back.
+- An API key not used for 7 days is deleted from the browser.
+
+SETTINGS (slide-in drawer on the right)
+- Change, show or delete your API key right in the drawer.
+- Automatic updates and Target List Refresh Speed.
+- Battle history size, clock fine-tuning (countdowns and TCT clock).
+- When you're away: pause time and API key expiry.
+- Cooldown limits (medical / booster max).
+- Backup or Restore lists: download JSON or CSV, save this list, saved
+  lists (restore, rename, download, delete), copy player IDs.
+- New sheet / Reset list (your current list is saved first).
+- Dark / light mode.
