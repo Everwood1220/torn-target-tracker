@@ -13,6 +13,10 @@ GETTING STARTED
 - Paste a Torn "Limited Access" API key (Torn > Settings > API Keys).
   The page explains everything the key is used for. Torn keys are
   read-only, so the page can't attack, spend, trade or send anything.
+- A "Your key never leaves your computer" box explains that the key is
+  saved only in this browser, is sent only to api.torn.com, the code is
+  open on GitHub, and how to delete it. Tip: make a new key just for
+  this page, named something like "Target Tracker".
 - Start a list five ways: the Matchup Sheet (Google Sheet link) from Aqua
   leadership, a faction page link, player IDs separated by commas, a
   JSON or CSV file, or one of your saved lists.

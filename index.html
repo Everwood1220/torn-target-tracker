@@ -410,7 +410,17 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
       <li>Read your attack log for the win/loss <strong>History</strong> with each player</li>
       <li>Read the <em>subjects</em> of your Torn messages for the <strong>Push</strong> timer and <strong>STAY IN HOSP</strong> alert (nothing is opened or marked read)</li>
     </ul>
-    <p class="hint">A Public key can't read your own info, so most of this, including History and the Push alerts, wouldn't work. Torn API keys are read-only, so this page can't attack, spend, trade or send anything for you. Your key stays in this browser only.</p>
+    <p class="hint">A Public key can't read your own info, so most of this, including History and the Push alerts, wouldn't work. Torn API keys are read-only, so this page can't attack, spend, trade or send anything for you.</p>
+    <div class="hint keysafe" style="border:1px solid rgba(46,204,113,.45);background:rgba(46,204,113,.08);border-radius:8px;padding:8px 12px;margin:8px 0">
+      <strong>🔒 Your key never leaves your computer</strong>
+      <ul style="margin:4px 0 0 18px;padding:0">
+        <li>It's saved only in <strong>this browser</strong> on this device. There's no server, account or database behind this page, and nobody else (including the page's author) can see it.</li>
+        <li>Your browser sends it straight to Torn's official API (<code>api.torn.com</code>) and nowhere else.</li>
+        <li>The whole page is open source on <a href="https://github.com/Everwood1220/torn-target-tracker" target="_blank" rel="noopener">GitHub</a>, so anyone can check this.</li>
+        <li>You're always in control. Delete it here anytime, use <em>Erase everything</em> in Settings, or turn it off in Torn's API Keys page. By default, a key unused for 7 days is deleted automatically.</li>
+        <li>Tip: create a new key just for this page and name it something like "Target Tracker" in Torn. That way you always know what it's for, and you can delete it anytime without affecting your other tools.</li>
+      </ul>
+    </div>
     <div class="inline">
       <input type="password" id="apiKey" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
       <button class="btn primary" id="saveKey">Save</button>
