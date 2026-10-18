@@ -22,7 +22,32 @@ GETTING STARTED
   JSON or CSV file, or one of your saved lists.
 - "+ Add targets" adds players without clearing your current list.
 
+MY HOSPITAL ALERTS
+- A soft sound plays once when your own hospital time reaches 5:00 and
+  a louder one once at 2:00. Each plays once per hospital stay and
+  resets when you leave or start a new stay. Uses the same status check
+  as the top bar, so no extra API calls.
+- Both alert times can be changed (First alert / Final alert, in
+  minutes:seconds from 0:10 to 60:00; defaults 5:00 and 2:00). Changing
+  a time re-arms that alert.
+- Settings > My hospital alerts: turn each alert on or off, set its
+  volume, and pick a sound (Soft chime, Double beep, Alarm, Bell).
+  "Test" plays it.
+- "Add your own sound" lets you add an audio file (up to about 1 MB),
+  kept in this browser. Pick it for either alert, or delete it.
+- Browsers block sound until you click the page once; a small hint
+  shows in Settings until sound is allowed.
+
 TARGET LIST
+- Sorting: click a column header to sort by it (click again to flip).
+  Time sorts by time left (Okay counts as 0, no timer goes last).
+- "Pin Status" (on by default) keeps Status groups on top (Okay,
+  Hospital, Traveling, Jail, Abroad, then the rest) and sorts by the
+  clicked column inside each group. Turn it off to sort the whole list.
+- Click Status to flip the group order: ▲ Okay first (then Hospital,
+  Traveling, ...), ▼ reversed (Okay last). The direction is kept while
+  sorting by other columns.
+  The sort and the pin are remembered.
 - Spreadsheet-style grid that fits on one screen without side scrolling.
 - Columns: Name [ID] (links to profile), Level, Life bar (hover for
   numbers), Status, Time, Reason, History (wins/losses vs. each player),
@@ -39,17 +64,32 @@ TARGET LIST
 - The page scrolls until the column headers reach the top, then the list
   scrolls on its own.
 
-TOP BAR (always visible at the top)
-- Your energy (E), nerve (N), life, status, and drug, booster and medical
-  cooldowns with their max (adjustable in Settings).
-- Ranked war score with a link to the war page, or "No ranked war".
-- Chain count with the next bonus (e.g. 4/10) and chain timeout.
+DASHBOARD (header, beside the "Aqua vs ..." title)
+- Cards for: Energy, Nerve and Life as bars with numbers; your status
+  with a big countdown (red card while in hospital); drug, booster and
+  medical cooldowns with their max (adjustable in Settings); ranked war
+  (your score vs theirs, lead or deficit vs the target with a bar,
+  running time, War page link, or "No ranked war"); chain count vs the
+  next bonus as a bar with the chain timer (amber under 60s, red under
+  30s); and the Torn City Time (TCT) clock.
 - STAY IN HOSP alert from messages saying "Turtle", "Stay in Hosp" or
   "Stay in Hospital". It turns into a green PUSH when the push time hits.
 - Push countdown read from message subjects with "push" and a TC time
   (e.g. "Push @ 18:30", "17:40 Push"), shown as "Push @ 18:30 in 1h 12m".
-- Torn City Time (TCT) clock.
-- Shrinks itself to stay on one line on smaller screens.
+- Push timer alerts: a sound at 5:00 and at 2:00 before the push
+  (both times adjustable, like the hospital alerts) (once
+  per push time; a new push time re-arms them). Settings > Push timer
+  alerts: on/off, volume and sound for each (defaults Double beep 50%
+  and Alarm 90%), with Test, and your own sounds work here too. The
+  5-minute pop-up message still follows the pop-up setting.
+- Faction call alerts: a sound when the call changes to STAY IN HOSP
+  and a different one when it changes to PUSH (once per new message or
+  change; a call already showing when the page opens stays quiet).
+  Settings > Faction call alerts: on/off, sound, volume and Test for
+  each (defaults Bell 70% and Alarm 90%); your own sounds work too.
+- Rearranges for smaller screens and works in light and dark themes.
+- Slim sticky mini-bar slides in at the top after you scroll past the
+  dashboard, so your hospital, chain timer and TCT stay in view.
 
 UPDATES AND API USE
 - Refresh All checks every player (about 650 ms apart, ~92 calls a
