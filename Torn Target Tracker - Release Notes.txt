@@ -6,6 +6,17 @@ Your API key, list, notes and settings are kept in your own browser only.
 
 
 -------------------------------------------------------------------
+v1.2  -  October 27, 2026  -  FF column
+-------------------------------------------------------------------
+
+- New "FF" column next to Stats showing each target's estimated Fair
+  Fight. Green = 1.5-2.5 sweet spot, amber = above 2.5, faded = below
+  1.5. Click the header to sort by it.
+- Needs your battle stats in Settings > Fair Fight helper and a Stats
+  number for the target. Shows "—" if your stats aren't set yet.
+
+
+-------------------------------------------------------------------
 v1.1  -  October 27, 2026  -  Fair Fight helper
 -------------------------------------------------------------------
 

@@ -470,7 +470,7 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
         <button class="btn small" id="ffPull" title="Read your battle stats from Torn with your API key">Get from Torn</button>
       </div>
       <div id="ffBands" class="hint" style="margin:8px 0 0;line-height:1.6"></div>
-      <p class="hint" style="margin:6px 0 0">Estimate only, not Torn's live number. Fair Fight uses battle stats only (gear, drugs and books don't count). Hover a target's Stats to see its estimated FF.</p>
+      <p class="hint" style="margin:6px 0 0">Estimate only, not Torn's live number. Fair Fight uses battle stats only (gear, drugs and books don't count). The FF column in your list shows each target's estimated FF.</p>
       <div id="ffMsg" class="msg"></div>
     </div>
     <div class="set danger-zone">
@@ -482,7 +482,7 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
     </div>
     <div class="set credit">
       <h4>About</h4>
-      <p class="hint" style="margin:0 0 6px">Torn Target Tracker v1.1, made by <a href="https://www.torn.com/profiles.php?XID=62912" target="_blank" rel="noopener"><strong>Everwood [62912]</strong></a>.</p>
+      <p class="hint" style="margin:0 0 6px">Torn Target Tracker v1.2, made by <a href="https://www.torn.com/profiles.php?XID=62912" target="_blank" rel="noopener"><strong>Everwood [62912]</strong></a>.</p>
       <p class="hint" style="margin:0">Found a problem or have an idea? <a href="https://www.torn.com/messages.php#/p=compose&amp;XID=62912" target="_blank" rel="noopener">Send Everwood a message</a> in Torn.</p>
     </div>
   </section>
@@ -1706,7 +1706,7 @@ const COLS = [
   {key:'name', label:'Name', flex:true}, {key:'level', label:'Lvl', title:'Level', cls:'num', w:54},
   {key:'life', label:'Life', w:66}, {key:'status', label:'Status', w:98}, {key:'time', label:'Time', cls:'num tmh', w:140}, {key:'reason', label:'Reason', flex:true}, {key:'history', label:'History', w:80},
   {key:'last', label:'Active', title:'Last action', w:64}, {key:'group', label:'Grp', title:'Group', w:42}, {key:'priority', label:'★', title:'Priority', cls:'pri', w:28},
-  {key:'stats', label:'Stats', cls:'num', w:60}, {key:'', label:'Attack', cls:'nosort', w:68}, {key:'notes', label:'Notes', cls:'notec', flex:true}, {key:'', label:'', cls:'nosort', w:28}
+  {key:'stats', label:'Stats', cls:'num', w:60}, {key:'ff', label:'FF', title:'estimated Fair Fight', cls:'num', w:44}, {key:'', label:'Attack', cls:'nosort', w:68}, {key:'notes', label:'Notes', cls:'notec', flex:true}, {key:'', label:'', cls:'nosort', w:28}
 ];
 // settings.sort: 'status' (default: Ready first, then soonest out) or 'col:<key>:<asc|desc>' (set by clicking a column header)
 function sortState(){
@@ -1721,7 +1721,7 @@ function getSorts(){
   const l = Array.isArray(settings.sorts) ? settings.sorts.filter(x => x && validSortCol(x.col) && (x.dir === 'asc' || x.dir === 'desc')).slice(0, 1) : [];
   return l.length ? l : [sortState()];
 }
-function defaultDir(col){ return ['stats', 'level', 'priority', 'history', 'lastfight'].includes(col) ? 'desc' : 'asc'; }
+function defaultDir(col){ return ['stats', 'ff', 'level', 'priority', 'history', 'lastfight'].includes(col) ? 'desc' : 'asc'; }
 function setSorts(list){
   settings.sorts = list; const f = list[0];
   settings.sort = f.col === 'status' ? (f.dir === 'desc' ? 'status:desc' : 'status') : 'col:' + f.col + ':' + f.dir;   // first sort also kept in the old format
@@ -1755,6 +1755,7 @@ function sortValue(col, t, idx){
     case 'group': return t.group || null;
     case 'priority': return t.priority ? 1 : 0;
     case 'stats': return t.stats != null ? t.stats : null;
+    case 'ff': { const e = t.stats != null ? ffEst(t.stats) : null; return e ? e.ff : null; }
     case 'notes': return String(t.notes || '').trim().toLowerCase() || null;
     case 'history': { const h = histIndex.get(t.id); return h && h.n ? h.n + h.last / 1e11 : null; }   // fights, then most recent
     case 'lastfight': { const h = histIndex.get(t.id); return h && h.n ? h.last : null; }
@@ -1992,6 +1993,7 @@ function render(){
       '<td class="clip"' + (t.group ? ' title="' + esc(t.group) + '"' : '') + '>' + esc(grp) + '</td>' +
       '<td class="pri"><label title="Mark as priority"><input type="checkbox" data-pri="' + id + '"' + (t.priority ? ' checked' : '') + ' aria-label="Priority: ' + esc(name || ('player ' + id)) + '"></label></td>' +
       '<td class="num">' + stats + '</td>' +
+      '<td class="num">' + (ffE ? '<span class="' + ffE.cls + '" title="Estimated Fair Fight (guide only)">' + ffE.ff.toFixed(2) + '</span>' : (t.stats != null && !ffMine() ? '<span class="ff-low" title="Enter your battle stats in Settings → Fair Fight helper">—</span>' : '')) + '</td>' +
       '<td class="act"><a class="atk" href="https://www.torn.com/page.php?sid=attack&user2ID=' + id + '" target="_blank" rel="noopener">Attack</a></td>' +
       '<td class="notec"><input type="text" class="note" data-note="' + id + '" value="' + esc(t.notes || '') + '"' + (t.notes ? ' title="' + esc(t.notes) + '"' : '') + ' maxlength="500" spellcheck="false" autocomplete="off" aria-label="Notes for ' + esc(name || ('player ' + id)) + '"></td>' +
       '<td class="act"><button class="rm" data-remove="' + id + '" title="Remove from my list" aria-label="Remove ' + esc(name || ('player ' + id)) + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></td>' +
@@ -3067,8 +3069,8 @@ if(keyExpired){ openStep1(); showMsg($('keyMsg'), 'Your API key was deleted beca
 window.__tt = { ffEst: s => ffEst(s), histState: () => ({me: hist.me, count: hist.list.length, complete: hist.complete, denied: hist.denied, lastSync: hist.lastSync, cursor: histCursor}), histIndex: () => histIndex, displayOrder, queueSnapshot: () => queue.slice(), addClockSample, clockState: () => ({offset: clockOffsetMs, precision: clockPrecisionMs, samples: clockSamples.length, synced: clockSynced}), serverNowMs, parseIds, parseGrid, extractPlayers, fmtStats, sheetUrlInfo, fetchSheetGrid };
 // ---- Fair Fight helper (estimate). FF ≈ 1 + 8/3 × √(target total ÷ your total), capped 1–3.
 // Matches faction guide: 3.5% → 1.5, 14% → 2.0, 31.6% → 2.5.
-const FF_KEY = 'tt_ffMine';
-function ffMine(){ const v = +localStorage.getItem(FF_KEY); return v > 0 ? v : 0; }
+var FF_KEY = 'tt_ffMine';
+function ffMine(){ const v = +localStorage.getItem('tt_ffMine'); return v > 0 ? v : 0; }
 function ffEst(stats){ const m = ffMine(); if(!m || !(stats > 0)) return null; const ff = Math.min(3, Math.max(1, 1 + 8/3 * Math.sqrt(stats / m))); return {ff, cls: ff >= 1.45 && ff <= 2.55 ? 'ff-good' : ff < 1.5 ? 'ff-low' : 'ff-high'}; }
 function ffRender(){
   const m = ffMine(), box = $('ffBands'); if(!box) return;
