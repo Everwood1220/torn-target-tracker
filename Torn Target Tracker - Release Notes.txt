@@ -6,6 +6,22 @@ Your API key, list, notes and settings are kept in your own browser only.
 
 
 -------------------------------------------------------------------
+v1.1  -  October 27, 2026  -  Fair Fight helper
+-------------------------------------------------------------------
+
+- New "Fair Fight helper" in Settings. Type your total battle stats
+  (e.g. 1b or 1,000,000,000) or press "Get from Torn" to read them
+  with your API key.
+- Shows the target stats for about 1.5 FF (~3.5% of yours), 2.0 FF
+  (~14%) and 2.5 FF (~31.6%), matching the faction guide.
+- Targets with stats from the sheet now show their estimated FF when
+  you hover the Stats number. Green = in the 1.5-2.5 sweet spot,
+  amber = above 2.5, faded = below 1.5.
+- This is an estimate, not Torn's live number. Only battle stats count
+  toward Fair Fight (gear, drugs and books don't).
+
+
+-------------------------------------------------------------------
 v1.0  -  October 11, 2026  -  First release
 -------------------------------------------------------------------
 

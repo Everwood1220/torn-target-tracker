@@ -342,6 +342,7 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
   .keywrap input{width:100%!important;box-sizing:border-box;padding-right:34px!important;font-family:monospace}
   .keywrap .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:16px;line-height:1;padding:4px;opacity:.5}
   .keywrap .eye:hover,.keywrap .eye.on{opacity:1}
+.ff-good{color:#3fb950;font-weight:600}.ff-low{opacity:.7}.ff-high{color:#d29922}
 </style>
 </head>
 <body>
@@ -460,6 +461,18 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
       </div>
       <div id="ioMsg" class="msg"></div>
     </div>
+    <div class="set" id="ffSet">
+      <h4>Fair Fight helper</h4>
+      <p class="hint" style="margin:0 0 6px">Your total battle stats (str + def + spd + dex). Used to show which targets give about 1.5 to 2.5 Fair Fight.</p>
+      <div class="inline" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <input id="ffMine" type="text" inputmode="numeric" placeholder="e.g. 1,000,000,000" style="flex:1;min-width:140px">
+        <button class="btn small" id="ffSave">Save</button>
+        <button class="btn small" id="ffPull" title="Read your battle stats from Torn with your API key">Get from Torn</button>
+      </div>
+      <div id="ffBands" class="hint" style="margin:8px 0 0;line-height:1.6"></div>
+      <p class="hint" style="margin:6px 0 0">Estimate only, not Torn's live number. Fair Fight uses battle stats only (gear, drugs and books don't count). Hover a target's Stats to see its estimated FF.</p>
+      <div id="ffMsg" class="msg"></div>
+    </div>
     <div class="set danger-zone">
       <h4>Start over</h4>
       <button class="btn small danger" id="clearBtn" title="Remove all players and start a new list (your current list is kept under Saved lists; API key and settings stay)">⟲ New sheet / Reset list</button>
@@ -469,7 +482,7 @@ try{ var tt_s = JSON.parse(localStorage.getItem('tt_settings') || '{}'); if(tt_s
     </div>
     <div class="set credit">
       <h4>About</h4>
-      <p class="hint" style="margin:0 0 6px">Torn Target Tracker v1.0, made by <a href="https://www.torn.com/profiles.php?XID=62912" target="_blank" rel="noopener"><strong>Everwood [62912]</strong></a>.</p>
+      <p class="hint" style="margin:0 0 6px">Torn Target Tracker v1.1, made by <a href="https://www.torn.com/profiles.php?XID=62912" target="_blank" rel="noopener"><strong>Everwood [62912]</strong></a>.</p>
       <p class="hint" style="margin:0">Found a problem or have an idea? <a href="https://www.torn.com/messages.php#/p=compose&amp;XID=62912" target="_blank" rel="noopener">Send Everwood a message</a> in Torn.</p>
     </div>
   </section>
@@ -1963,7 +1976,8 @@ function render(){
     const laCls = d && d.laStatus ? ' la-' + d.laStatus.toLowerCase() : '';
     const laTitle = d && (d.lastAction || d.laStatus) ? (d.laStatus ? d.laStatus + ' · ' : '') + (d.lastAction || '') : '';
     const grp = t.group ? String(t.group).replace(/^group\s*(\d+)$/i, 'G$1') : '';
-    const stats = t.stats != null ? '<span title="' + Number(t.stats).toLocaleString() + '">' + fmtStats(t.stats) + '</span>' : '';
+    const ffE = t.stats != null ? ffEst(t.stats) : null;
+    const stats = t.stats != null ? '<span' + (ffE ? ' class="' + ffE.cls + '"' : '') + ' title="' + Number(t.stats).toLocaleString() + (ffE ? ' · est. FF ' + ffE.ff.toFixed(2) : '') + '">' + fmtStats(t.stats) + '</span>' : '';
     const checking = manualIds.has(id);
     html += '<tr data-id="' + id + '" title="Click to refresh this player">' +
       '<td class="nm" title="' + esc((name ? name + ' ' : '') + '[' + id + ']') + '"><a class="pname' + (t.priority ? ' prio' : '') + '" href="https://www.torn.com/profiles.php?XID=' + id + '" target="_blank" rel="noopener">' + (t.priority ? '<span class="star" title="Priority">★</span>' : '') + (name ? esc(name) + ' ' : '') + '<span class="pid">[' + id + ']</span></a></td>' +
@@ -3050,7 +3064,32 @@ function onActivity(){
 document.addEventListener('visibilitychange', () => { if(!document.hidden) onActivity(); });
 if(keyExpired){ openStep1(); showMsg($('keyMsg'), 'Your API key was deleted because this page wasn\'t used for ' + settings.keyDays + ' days. Paste it again to keep tracking.', 'info'); }
 
-window.__tt = { histState: () => ({me: hist.me, count: hist.list.length, complete: hist.complete, denied: hist.denied, lastSync: hist.lastSync, cursor: histCursor}), histIndex: () => histIndex, displayOrder, queueSnapshot: () => queue.slice(), addClockSample, clockState: () => ({offset: clockOffsetMs, precision: clockPrecisionMs, samples: clockSamples.length, synced: clockSynced}), serverNowMs, parseIds, parseGrid, extractPlayers, fmtStats, sheetUrlInfo, fetchSheetGrid };
+window.__tt = { ffEst: s => ffEst(s), histState: () => ({me: hist.me, count: hist.list.length, complete: hist.complete, denied: hist.denied, lastSync: hist.lastSync, cursor: histCursor}), histIndex: () => histIndex, displayOrder, queueSnapshot: () => queue.slice(), addClockSample, clockState: () => ({offset: clockOffsetMs, precision: clockPrecisionMs, samples: clockSamples.length, synced: clockSynced}), serverNowMs, parseIds, parseGrid, extractPlayers, fmtStats, sheetUrlInfo, fetchSheetGrid };
+// ---- Fair Fight helper (estimate). FF ≈ 1 + 8/3 × √(target total ÷ your total), capped 1–3.
+// Matches faction guide: 3.5% → 1.5, 14% → 2.0, 31.6% → 2.5.
+const FF_KEY = 'tt_ffMine';
+function ffMine(){ const v = +localStorage.getItem(FF_KEY); return v > 0 ? v : 0; }
+function ffEst(stats){ const m = ffMine(); if(!m || !(stats > 0)) return null; const ff = Math.min(3, Math.max(1, 1 + 8/3 * Math.sqrt(stats / m))); return {ff, cls: ff >= 1.45 && ff <= 2.55 ? 'ff-good' : ff < 1.5 ? 'ff-low' : 'ff-high'}; }
+function ffRender(){
+  const m = ffMine(), box = $('ffBands'); if(!box) return;
+  if($('ffMine') && document.activeElement !== $('ffMine')) $('ffMine').value = m ? m.toLocaleString() : '';
+  if(!m){ box.textContent = 'Enter your total battle stats to see target ranges.'; return; }
+  box.innerHTML = [1.5, 2.0, 2.5].map(ff => { const r = Math.pow((ff - 1) * 3 / 8, 2); return '<strong>' + ff.toFixed(1) + ' FF</strong> ≈ targets with about <strong>' + fmtStats(m * r) + '</strong> stats (≈' + (r * 100).toFixed(1) + '% of yours)'; }).join('<br>') + '<br>Aim between <strong>' + fmtStats(m * 0.035) + '</strong> and <strong>' + fmtStats(m * 0.316) + '</strong>.';
+}
+function ffSet(v){ if(v > 0) localStorage.setItem(FF_KEY, String(Math.round(v))); else localStorage.removeItem(FF_KEY); ffRender(); try{ render(); }catch(e){} }
+document.addEventListener('DOMContentLoaded', ffRender); ffRender();
+$('ffSave') && $('ffSave').addEventListener('click', () => { const raw = $('ffMine').value.trim().toLowerCase().replace(/,/g, ''); const mm = raw.match(/^([\d.]+)\s*([kmbt]?)$/); if(raw === ''){ ffSet(0); showMsg($('ffMsg'), 'Cleared.', 'ok'); return; } if(!mm){ showMsg($('ffMsg'), 'Type a number like 1000000000 or 1b.', 'err'); return; } ffSet(+mm[1] * ({k:1e3, m:1e6, b:1e9, t:1e12}[mm[2]] || 1)); showMsg($('ffMsg'), 'Saved.', 'ok'); });
+$('ffMine') && $('ffMine').addEventListener('keydown', e => { if(e.key === 'Enter') $('ffSave').click(); });
+$('ffPull') && $('ffPull').addEventListener('click', async () => {
+  if(!apiKey){ showMsg($('ffMsg'), 'Add your API key first, or type your total.', 'err'); return; }
+  try{
+    const j = await getJson('https://api.torn.com/user/?selections=battlestats&comment=TargetTracker&timestamp=' + Date.now() + '&key=' + encodeURIComponent(apiKey));
+    if(j && j.error){ showMsg($('ffMsg'), 'Torn said: ' + (j.error.error || 'error') + '. Type your total instead.', 'err'); return; }
+    const tot = ['strength', 'defense', 'speed', 'dexterity'].reduce((a, k) => a + (+(j && j[k]) || 0), 0);
+    if(!(tot > 0)){ showMsg($('ffMsg'), "Couldn't read your stats. Type your total instead.", 'err'); return; }
+    ffSet(tot); showMsg($('ffMsg'), 'Got your stats from Torn.', 'ok');
+  }catch(e){ showMsg($('ffMsg'), 'Network error. Type your total instead.', 'err'); }
+});
 })();
 </script>
 </body>
